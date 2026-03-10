@@ -140,6 +140,13 @@
 
 <script>
 let currentFrequency = 1;
+let teachingName = "";
+
+// Ask for teaching name on load
+window.onload = function() {
+    teachingName = prompt("Enter your teaching name (e.g., D.West):");
+    if (!teachingName) teachingName = "Unknown Staff";
+};
 
 const webhooks = {
     1: "https://discord.com/api/webhooks/1480770456058335252/iqvbk1P0h7pLX77mM4CtJHxqqAmxCfnVGK6o7UVJrLtKTOKofSwC5L5vFcPKrw3mc_q5",
@@ -160,13 +167,15 @@ function sendMessage() {
     const msg = document.getElementById("messageInput").value.trim();
     if (!msg) return;
 
+    const formatted = `📻 **[Freq ${currentFrequency}] ${teachingName}:** ${msg}`;
+
     fetch(webhooks[currentFrequency], {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: `📻 **[Freq ${currentFrequency}]** ${msg}` })
+        body: JSON.stringify({ content: formatted })
     });
 
-    document.getElementById("screen").innerText += `\nYou: ${msg}`;
+    document.getElementById("screen").innerText += `\n${teachingName}: ${msg}`;
     document.getElementById("messageInput").value = "";
 }
 
@@ -177,7 +186,8 @@ function triggerPriority() {
     const reason = prompt("Enter the reason:");
     if (!reason) return;
 
-    const alertMsg = `⚠️| Code Yellow, a member of staff has pushed priority their location is **${location}** the reason is **${reason}**=`;
+    const alertMsg =
+        `⚠️| Code Yellow, a member of staff (${teachingName}) has pushed priority their location is **${location}** the reason is **${reason}**=`;
 
     // Flash animation
     const radio = document.getElementById("radioBox");
